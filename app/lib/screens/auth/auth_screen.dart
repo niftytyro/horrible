@@ -19,6 +19,7 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   late final PageController _pageController;
+  double scale = 1;
 
   @override
   void initState() {
@@ -27,29 +28,40 @@ class _AuthScreenState extends State<AuthScreen> {
       timeDilation = 1;
     });
     _pageController = PageController();
+    _pageController.addListener(() {
+      setState(() {
+        scale = 1 - _pageController.offset / MediaQuery.of(context).size.width;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: _pageController,
-                  scrollDirection: Axis.horizontal,
-                  children: const [
-                    LoginPage(),
-                    LoadingPage(),
-                  ],
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: _pageController,
+                scrollDirection: Axis.horizontal,
+                children: const [
+                  LoginPage(),
+                  LoadingPage(),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: BrickSpacing.xxl,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: BrickSpacing.xxl,
+              ),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.ease,
+                constraints: BoxConstraints(
+                  maxWidth: scale * MediaQuery.of(context).size.width,
                 ),
                 child: TextButton(
                   onPressed: () {
@@ -64,11 +76,17 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 50)
-            ],
-          ),
+            ),
+            const SizedBox(height: 50)
+          ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }
