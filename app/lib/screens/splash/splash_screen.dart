@@ -1,4 +1,4 @@
-import 'package:app/screens/auth_screen.dart';
+import 'package:app/screens/auth/auth_screen.dart';
 import 'package:app/widgets/app_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

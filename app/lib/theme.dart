@@ -5,6 +5,7 @@ class BrickColors {
   static const Color orchidCrayoia = Color(0xFFFFB2E6);
   static const Color darkLiver = Color(0xFF483C46);
   static const Color vividViolet = Color(0xFF8447FF);
+  static const Color vividVioletLight = Color(0xFF8B52FF);
   static const Color aquamarine = Color(0xFF8CFFDA);
 }
 
@@ -14,6 +15,8 @@ class BrickTheme {
       fontFamily: 'Raleway',
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
+          overlayColor:
+              MaterialStateProperty.all<Color>(BrickColors.vividVioletLight),
           backgroundColor:
               MaterialStateProperty.all<Color>(BrickColors.vividViolet),
           foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
