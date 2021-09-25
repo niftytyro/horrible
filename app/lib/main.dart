@@ -1,3 +1,4 @@
+import 'package:app/screens/auth_screen.dart';
 import 'package:app/screens/splash_screen.dart';
 import 'package:app/theme.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Gab',
         theme: BrickTheme.lightTheme,
-        routes: {SplashScreen.route: (context) => const SplashScreen()},
+        routes: {
+          SplashScreen.route: (context) => const SplashScreen(),
+          AuthScreen.route: (context) => const AuthScreen(),
+        },
         initialRoute: SplashScreen.route,
         debugShowCheckedModeBanner: false,
       ),

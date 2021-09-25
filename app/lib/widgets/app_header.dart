@@ -7,9 +7,12 @@ class AppHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Gab',
-      style: BrickTheme.textTheme.headline1,
+    return Material(
+      child: Text(
+        'Gab',
+        textAlign: TextAlign.center,
+        style: BrickTheme.textTheme.headline1,
+      ),
     );
   }
 }
