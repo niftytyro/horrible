@@ -1,3 +1,4 @@
+import 'package:app/screens/auth/indicators.dart';
 import 'package:app/screens/auth/loading_page.dart';
 import 'package:app/screens/auth/login_page.dart';
 import 'package:app/theme.dart';
@@ -18,7 +19,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  late final PageController _pageController;
+  final PageController _pageController = PageController();
   double scale = 1;
 
   @override
@@ -27,7 +28,6 @@ class _AuthScreenState extends State<AuthScreen> {
     Future.delayed(const Duration(seconds: 1), () {
       timeDilation = 1;
     });
-    _pageController = PageController();
     _pageController.addListener(() {
       setState(() {
         scale = 1 - _pageController.offset / MediaQuery.of(context).size.width;
@@ -44,7 +44,7 @@ class _AuthScreenState extends State<AuthScreen> {
           children: [
             Expanded(
               child: PageView(
-                physics: const NeverScrollableScrollPhysics(),
+                // physics: const NeverScrollableScrollPhysics(),
                 controller: _pageController,
                 scrollDirection: Axis.horizontal,
                 children: const [
@@ -77,7 +77,9 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 50)
+            const SizedBox(height: 35),
+            Indicators(pageController: _pageController),
+            const SizedBox(height: 25),
           ],
         ),
       ),
