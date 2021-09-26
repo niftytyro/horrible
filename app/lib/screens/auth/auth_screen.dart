@@ -22,6 +22,9 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final PageController _pageController = PageController();
   double scale = 1;
+  double firstDotWidth = Dot.maxWidth;
+  double secondDotWidth = Dot.minWidth;
+  double thirdDotWidth = Dot.minWidth;
 
   @override
   void initState() {
@@ -49,6 +52,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     slideToProfilePage: () {
                       setState(() {
                         scale = 1;
+                        secondDotWidth = Dot.minWidth;
+                        thirdDotWidth = Dot.maxWidth;
                       });
                       _pageController.animateToPage(
                         2,
@@ -76,6 +81,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     if (_pageController.page == 0) {
                       setState(() {
                         scale = 0;
+                        firstDotWidth = Dot.minWidth;
+                        secondDotWidth = Dot.maxWidth;
                       });
                       _pageController.animateToPage(
                         1,
@@ -85,6 +92,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     } else {
                       // NOTE: this is just for dev purposes
                       _pageController.jumpToPage(0);
+                      setState(() {
+                        firstDotWidth = Dot.maxWidth;
+                        thirdDotWidth = Dot.minWidth;
+                      });
                     }
                   },
                   child: const ResizableArrow(
@@ -94,7 +105,11 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ),
             const SizedBox(height: 35),
-            Indicators(pageController: _pageController),
+            Indicators(
+              firstDotWidth: firstDotWidth,
+              secondDotWidth: secondDotWidth,
+              thirdDotWidth: thirdDotWidth,
+            ),
             const SizedBox(height: 25),
           ],
         ),
