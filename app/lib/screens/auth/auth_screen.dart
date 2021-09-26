@@ -1,6 +1,7 @@
 import 'package:app/screens/auth/indicators.dart';
 import 'package:app/screens/auth/loading_page.dart';
 import 'package:app/screens/auth/login_page.dart';
+import 'package:app/screens/auth/profile_page.dart';
 import 'package:app/theme.dart';
 import 'package:app/widgets/app_header.dart';
 import 'package:app/widgets/resizable_arrow.dart';
@@ -28,11 +29,6 @@ class _AuthScreenState extends State<AuthScreen> {
     Future.delayed(const Duration(seconds: 1), () {
       timeDilation = 1;
     });
-    _pageController.addListener(() {
-      setState(() {
-        scale = 1 - _pageController.offset / MediaQuery.of(context).size.width;
-      });
-    });
   }
 
   @override
@@ -47,9 +43,21 @@ class _AuthScreenState extends State<AuthScreen> {
                 // physics: const NeverScrollableScrollPhysics(),
                 controller: _pageController,
                 scrollDirection: Axis.horizontal,
-                children: const [
-                  LoginPage(),
-                  LoadingPage(),
+                children: [
+                  const LoginPage(),
+                  LoadingPage(
+                    slideToProfilePage: () {
+                      setState(() {
+                        scale = 1;
+                      });
+                      _pageController.animateToPage(
+                        2,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
+                    },
+                  ),
+                  const ProfilePage(),
                 ],
               ),
             ),
@@ -58,18 +66,26 @@ class _AuthScreenState extends State<AuthScreen> {
                 horizontal: BrickSpacing.xxl,
               ),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.ease,
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeInOut,
                 constraints: BoxConstraints(
                   maxWidth: scale * MediaQuery.of(context).size.width,
                 ),
                 child: TextButton(
                   onPressed: () {
-                    _pageController.animateToPage(
-                      _pageController.page == 0 ? 1 : 0,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.ease,
-                    );
+                    if (_pageController.page == 0) {
+                      setState(() {
+                        scale = 0;
+                      });
+                      _pageController.animateToPage(
+                        1,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                      );
+                    } else {
+                      // NOTE: this is just for dev purposes
+                      _pageController.jumpToPage(0);
+                    }
                   },
                   child: const ResizableArrow(
                     text: 'Chaliye shuru karte hain',

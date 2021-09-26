@@ -67,9 +67,9 @@ class Dot extends StatelessWidget {
     return Container(
       width: width,
       height: 10,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(100),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          100,
         ),
         color: BrickColors.lightPeriwinkle,
       ),
