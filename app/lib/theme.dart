@@ -7,12 +7,15 @@ class BrickColors {
   static const Color vividViolet = Color(0xFF8447FF);
   static const Color vividVioletLight = Color(0xFF8B52FF);
   static const Color aquamarine = Color(0xFF8CFFDA);
+  static const Color white = Color(0xFFF9F9F9);
 }
 
 class BrickTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       fontFamily: 'Raleway',
+      backgroundColor: BrickColors.white,
+      scaffoldBackgroundColor: BrickColors.white,
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
           overlayColor:

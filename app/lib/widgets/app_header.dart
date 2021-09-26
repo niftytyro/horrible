@@ -8,6 +8,7 @@ class AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: BrickColors.white,
       child: Text(
         'Gab',
         textAlign: TextAlign.center,
