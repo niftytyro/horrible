@@ -36,82 +36,91 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: PageView(
-                // physics: const NeverScrollableScrollPhysics(),
-                controller: _pageController,
-                scrollDirection: Axis.horizontal,
-                children: [
-                  const LoginPage(),
-                  LoadingPage(
-                    slideToProfilePage: () {
-                      setState(() {
-                        scale = 1;
-                        secondDotWidth = Dot.minWidth;
-                        thirdDotWidth = Dot.maxWidth;
-                      });
-                      _pageController.animateToPage(
-                        2,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    },
-                  ),
-                  const ProfilePage(),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: BrickSpacing.xxl,
-              ),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 350),
-                curve: Curves.easeInOut,
-                constraints: BoxConstraints(
-                  maxWidth: scale * MediaQuery.of(context).size.width,
-                ),
-                child: TextButton(
-                  onPressed: () {
-                    if (_pageController.page == 0) {
-                      setState(() {
-                        scale = 0;
-                        firstDotWidth = Dot.minWidth;
-                        secondDotWidth = Dot.maxWidth;
-                      });
-                      _pageController.animateToPage(
-                        1,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    } else {
-                      // NOTE: this is just for dev purposes
-                      _pageController.jumpToPage(0);
-                      setState(() {
-                        firstDotWidth = Dot.maxWidth;
-                        thirdDotWidth = Dot.minWidth;
-                      });
-                    }
-                  },
-                  child: const ResizableArrow(
-                    text: 'Chaliye shuru karte hain',
-                  ),
+    return GestureDetector(
+      onTap: () {
+        print('hello there');
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: PageView(
+                  // physics: const NeverScrollableScrollPhysics(),
+                  controller: _pageController,
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    const LoginPage(),
+                    LoadingPage(
+                      slideToProfilePage: () {
+                        setState(() {
+                          scale = 1;
+                          secondDotWidth = Dot.minWidth;
+                          thirdDotWidth = Dot.maxWidth;
+                        });
+                        _pageController.animateToPage(
+                          2,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease,
+                        );
+                      },
+                    ),
+                    const ProfilePage(),
+                  ],
                 ),
               ),
-            ),
-            const SizedBox(height: 35),
-            Indicators(
-              firstDotWidth: firstDotWidth,
-              secondDotWidth: secondDotWidth,
-              thirdDotWidth: thirdDotWidth,
-            ),
-            const SizedBox(height: 25),
-          ],
+              if (MediaQuery.of(context).viewInsets.bottom == 0.0) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: BrickSpacing.xxl,
+                  ),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeInOut,
+                    constraints: BoxConstraints(
+                      maxWidth: scale * MediaQuery.of(context).size.width,
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        if (_pageController.page == 0) {
+                          setState(() {
+                            scale = 0;
+                            firstDotWidth = Dot.minWidth;
+                            secondDotWidth = Dot.maxWidth;
+                          });
+                          _pageController.animateToPage(
+                            1,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.ease,
+                          );
+                        } else {
+                          // NOTE: this is just for dev purposes
+                          _pageController.jumpToPage(0);
+                          setState(() {
+                            firstDotWidth = Dot.maxWidth;
+                            thirdDotWidth = Dot.minWidth;
+                          });
+                        }
+                      },
+                      child: const ResizableArrow(
+                        text: 'Chaliye shuru karte hain',
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 35),
+                Indicators(
+                  firstDotWidth: firstDotWidth,
+                  secondDotWidth: secondDotWidth,
+                  thirdDotWidth: thirdDotWidth,
+                ),
+                const SizedBox(height: 25),
+              ]
+            ],
+          ),
         ),
       ),
     );

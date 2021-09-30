@@ -9,6 +9,11 @@ class BrickColors {
   static const Color aquamarine = Color(0xFF8CFFDA);
   static const Color lightPeriwinkle = Color(0xFFCFCFEA);
   static const Color white = Color(0xFFF9F9F9);
+  static const Color black100 = Color(0xFF121212);
+  static const Color black80 = Color(0xFF333333);
+  static const Color black60 = Color(0xFF666666);
+  static const Color black40 = Color(0xFF999999);
+  static const Color black20 = Color(0xFFBBBBBB);
 }
 
 class BrickTheme {
@@ -62,7 +67,9 @@ class BrickTheme {
 }
 
 class BrickSpacing {
+  static const double xs = 4;
   static const double s = 8;
+  static const double s1 = 10;
   static const double m = 16;
   static const double l = 18;
   static const double l1 = 24;
