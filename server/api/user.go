@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"os"
+	"strings"
 	"time"
 
 	"net/http"
@@ -36,7 +37,21 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	err := decoder.Decode(&data)
 	if err != nil {
-		panic(err)
+		res.WriteHeader(http.StatusBadRequest)
+		res.Write([]byte("could not parse body"))
+	}
+
+	data.Email = strings.TrimSpace(data.Email)
+	data.Name = strings.TrimSpace(data.Name)
+	if !validateEmail(data.Email, false) {
+		res.WriteHeader(http.StatusBadRequest)
+		res.Write([]byte("invalid email"))
+		return
+	}
+	if !validateName(data.Name, false) {
+		res.WriteHeader(http.StatusBadRequest)
+		res.Write([]byte("invalid name"))
+		return
 	}
 
 	var user models.User
@@ -73,7 +88,31 @@ func updateHandler(res http.ResponseWriter, req *http.Request) {
 	err := decoder.Decode(&data)
 
 	if err != nil {
-		panic(err)
+		res.WriteHeader(http.StatusBadRequest)
+		res.Write([]byte("could not parse body"))
+	}
+
+	data.Email = strings.TrimSpace(data.Email)
+	data.Name = strings.TrimSpace(data.Name)
+	data.Username = strings.TrimSpace(data.Username)
+	data.Bio = strings.TrimSpace(data.Bio)
+	if !validateEmail(data.Email, true) {
+		res.WriteHeader(http.StatusBadRequest)
+		res.Write([]byte("invalid email"))
+		return
+	}
+	if !validateName(data.Name, true) {
+		res.WriteHeader(http.StatusBadRequest)
+		res.Write([]byte("invalid name"))
+		return
+	}
+	if !validateUsername(data.Username, true) {
+		res.WriteHeader(http.StatusBadRequest)
+		res.Write([]byte("invalid username"))
+		return
+	}
+	if data.Id == "" {
+		panic("user id not available")
 	}
 
 	var user models.User
@@ -86,8 +125,16 @@ func updateHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	db.Model(&user).Update("bio", data.Bio)
-	db.Model(&user).Update("email", data.Email)
-	db.Model(&user).Update("name", data.Name)
-	db.Model(&user).Update("username", data.Username)
+	if data.Bio != "" {
+		db.Model(&user).Update("bio", data.Bio)
+	}
+	if data.Email != "" {
+		db.Model(&user).Update("email", data.Email)
+	}
+	if data.Name != "" {
+		db.Model(&user).Update("name", data.Name)
+	}
+	if data.Username != "" {
+		db.Model(&user).Update("username", data.Username)
+	}
 }
