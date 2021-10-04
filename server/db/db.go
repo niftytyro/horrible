@@ -4,25 +4,37 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/udasitharani/gab/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func Init() *gorm.DB {
-	db, err := gorm.Open(
+var db *gorm.DB
+
+func GetDB() *gorm.DB {
+	return db
+}
+
+func Init() {
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_PORT"),
+	)
+
+	var err error
+	db, err = gorm.Open(
 		postgres.New(postgres.Config{
-			DSN: fmt.Sprintf(
-				"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-				os.Getenv("DB_HOST"),
-				os.Getenv("DB_USER"),
-				os.Getenv("DB_PASSWORD"),
-				os.Getenv("DB_NAME"),
-				os.Getenv("DB_PORT"),
-			),
+			DSN:                  dsn,
 			PreferSimpleProtocol: true,
 		}), &gorm.Config{})
+
 	if err != nil {
-		return nil
+		panic(err)
 	}
-	return db
+
+	db.AutoMigrate(&models.User{})
 }
