@@ -9,8 +9,8 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/udasitharani/gab/db"
-	"github.com/udasitharani/gab/models"
+	"github.com/udasitharani/horrible/db"
+	"github.com/udasitharani/horrible/models"
 )
 
 type AuthBody struct {

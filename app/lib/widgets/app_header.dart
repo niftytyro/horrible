@@ -10,7 +10,7 @@ class AppHeader extends StatelessWidget {
     return Material(
       color: BrickColors.white,
       child: Text(
-        'Gab',
+        'Horrible',
         textAlign: TextAlign.center,
         style: BrickTheme.textTheme.headline1,
       ),

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/udasitharani/gab/api"
+	"github.com/udasitharani/horrible/api"
 )
 
 func main() {

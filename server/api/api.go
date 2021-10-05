@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/udasitharani/gab/config"
-	"github.com/udasitharani/gab/db"
+	"github.com/udasitharani/horrible/config"
+	"github.com/udasitharani/horrible/db"
 )
 
 func Init() {

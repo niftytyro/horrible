@@ -1,4 +1,4 @@
-package com.udasitharani.gab
+package com.udasitharani.horrible
 
 import io.flutter.embedding.android.FlutterActivity
 

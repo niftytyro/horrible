@@ -1,4 +1,4 @@
-module github.com/udasitharani/gab
+module github.com/udasitharani/horrible
 
 go 1.17
 

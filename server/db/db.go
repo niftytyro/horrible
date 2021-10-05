@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/udasitharani/gab/models"
+	"github.com/udasitharani/horrible/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

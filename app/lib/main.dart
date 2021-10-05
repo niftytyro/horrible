@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         systemNavigationBarColor: BrickColors.white,
       ),
       child: MaterialApp(
-        title: 'Gab',
+        title: 'Horrible',
         theme: BrickTheme.lightTheme,
         routes: {
           SplashScreen.route: (context) => const SplashScreen(),
