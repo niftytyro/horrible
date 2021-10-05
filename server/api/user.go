@@ -32,6 +32,10 @@ type UpdateBody struct {
 }
 
 func loginHandler(res http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		res.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	var data AuthBody
 
 	decoder := json.NewDecoder(req.Body)
@@ -39,6 +43,7 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
 		res.Write([]byte("could not parse body"))
+		return
 	}
 
 	data.Email = strings.TrimSpace(data.Email)
@@ -48,7 +53,7 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("invalid email"))
 		return
 	}
-	if !validateName(data.Name, false) {
+	if !validateName(data.Name, true) {
 		res.WriteHeader(http.StatusBadRequest)
 		res.Write([]byte("invalid name"))
 		return

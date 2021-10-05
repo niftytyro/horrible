@@ -1,7 +1,6 @@
 import 'package:app/screens/auth/page_wrapper.dart';
 import 'package:app/theme.dart';
 import 'package:app/widgets/app_header.dart';
-import 'package:app/widgets/resizable_arrow.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {

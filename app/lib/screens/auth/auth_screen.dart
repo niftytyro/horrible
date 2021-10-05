@@ -1,9 +1,10 @@
+import 'package:app/constants.dart';
 import 'package:app/screens/auth/indicators.dart';
 import 'package:app/screens/auth/loading_page.dart';
 import 'package:app/screens/auth/login_page.dart';
 import 'package:app/screens/auth/profile_page.dart';
+import 'package:app/services/onboarding.dart';
 import 'package:app/theme.dart';
-import 'package:app/widgets/app_header.dart';
 import 'package:app/widgets/resizable_arrow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class _AuthScreenState extends State<AuthScreen> {
   double firstDotWidth = Dot.maxWidth;
   double secondDotWidth = Dot.minWidth;
   double thirdDotWidth = Dot.minWidth;
+  String message = "";
 
   @override
   void initState() {
@@ -38,7 +40,6 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print('hello there');
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
@@ -49,7 +50,7 @@ class _AuthScreenState extends State<AuthScreen> {
             children: [
               Expanded(
                 child: PageView(
-                  // physics: const NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
                   children: [
@@ -63,7 +64,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         });
                         _pageController.animateToPage(
                           2,
-                          duration: const Duration(milliseconds: 300),
+                          duration: animationDuration,
                           curve: Curves.ease,
                         );
                       },
@@ -78,24 +79,34 @@ class _AuthScreenState extends State<AuthScreen> {
                     horizontal: BrickSpacing.xxl,
                   ),
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 350),
+                    duration: animationDuration,
                     curve: Curves.easeInOut,
                     constraints: BoxConstraints(
                       maxWidth: scale * MediaQuery.of(context).size.width,
                     ),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_pageController.page == 0) {
-                          setState(() {
-                            scale = 0;
-                            firstDotWidth = Dot.minWidth;
-                            secondDotWidth = Dot.maxWidth;
-                          });
-                          _pageController.animateToPage(
-                            1,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.ease,
-                          );
+                          final error = await onboard();
+                          if (error != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(error),
+                                backgroundColor: BrickColors.englishRusk,
+                              ),
+                            );
+                          } else {
+                            setState(() {
+                              scale = 0;
+                              firstDotWidth = Dot.minWidth;
+                              secondDotWidth = Dot.maxWidth;
+                            });
+                            _pageController.animateToPage(
+                              1,
+                              duration: animationDuration,
+                              curve: Curves.ease,
+                            );
+                          }
                         } else {
                           // NOTE: this is just for dev purposes
                           _pageController.jumpToPage(0);

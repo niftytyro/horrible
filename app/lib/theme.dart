@@ -8,6 +8,7 @@ class BrickColors {
   static const Color vividVioletLight = Color(0xFF8B52FF);
   static const Color aquamarine = Color(0xFF8CFFDA);
   static const Color lightPeriwinkle = Color(0xFFCFCFEA);
+  static const Color englishRusk = Color(0xFF413C58);
   static const Color white = Color(0xFFF9F9F9);
   static const Color black100 = Color(0xFF121212);
   static const Color black80 = Color(0xFF333333);
