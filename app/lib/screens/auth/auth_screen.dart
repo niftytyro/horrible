@@ -28,6 +28,38 @@ class _AuthScreenState extends State<AuthScreen> {
   double thirdDotWidth = Dot.minWidth;
   String message = "";
 
+  void chaloShuruKaro() async {
+    final error = await onboard();
+    if (error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error),
+          backgroundColor: BrickColors.englishRusk,
+        ),
+      );
+    } else {
+      setState(() {
+        scale = 0;
+        firstDotWidth = Dot.minWidth;
+        secondDotWidth = Dot.maxWidth;
+      });
+      _pageController.animateToPage(
+        1,
+        duration: animationDuration,
+        curve: Curves.ease,
+      );
+    }
+  }
+
+  void chaloKhatamKaro() {
+    // NOTE: this is just for dev purposes
+    _pageController.jumpToPage(0);
+    setState(() {
+      firstDotWidth = Dot.maxWidth;
+      thirdDotWidth = Dot.minWidth;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -87,33 +119,9 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: TextButton(
                       onPressed: () async {
                         if (_pageController.page == 0) {
-                          final error = await onboard();
-                          if (error != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(error),
-                                backgroundColor: BrickColors.englishRusk,
-                              ),
-                            );
-                          } else {
-                            setState(() {
-                              scale = 0;
-                              firstDotWidth = Dot.minWidth;
-                              secondDotWidth = Dot.maxWidth;
-                            });
-                            _pageController.animateToPage(
-                              1,
-                              duration: animationDuration,
-                              curve: Curves.ease,
-                            );
-                          }
+                          chaloShuruKaro();
                         } else {
-                          // NOTE: this is just for dev purposes
-                          _pageController.jumpToPage(0);
-                          setState(() {
-                            firstDotWidth = Dot.maxWidth;
-                            thirdDotWidth = Dot.minWidth;
-                          });
+                          chaloKhatamKaro();
                         }
                       },
                       child: const ResizableArrow(
