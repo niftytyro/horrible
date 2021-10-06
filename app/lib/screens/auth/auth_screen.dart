@@ -35,6 +35,7 @@ class _AuthScreenState extends State<AuthScreen> {
         SnackBar(
           content: Text(error),
           backgroundColor: BrickColors.englishRusk,
+          padding: const EdgeInsets.all(BrickSpacing.l1),
         ),
       );
     } else {
