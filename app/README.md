@@ -10,6 +10,7 @@ The Crazy Chat App
   - [x] Profile Update Page
   - [x] Input Validation
   - [x] Backend Integration
+  - [ ] Using Provider
   - [ ] Tests
 - [ ] Home
 - [ ] Search
