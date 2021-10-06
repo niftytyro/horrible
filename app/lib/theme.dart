@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 class BrickColors {
   static const Color orchidCrayoia = Color(0xFFFFB2E6);
+  static const Color notRed = Color(0xFFC83E4D);
   static const Color darkLiver = Color(0xFF483C46);
   static const Color vividViolet = Color(0xFF8447FF);
   static const Color vividVioletLight = Color(0xFF8B52FF);
@@ -47,6 +48,7 @@ class BrickTheme {
   static TextTheme get textTheme {
     return const TextTheme(
       bodyText1: TextStyle(fontSize: 14),
+      bodyText2: TextStyle(fontSize: 12),
       headline1: TextStyle(
         fontFamily: 'Poppins',
         fontSize: 48,

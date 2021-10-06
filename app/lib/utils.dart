@@ -16,3 +16,23 @@ void showSnackBar({
     ),
   );
 }
+
+bool validateName(String name) {
+  if (name.trim() == "") {
+    return false;
+  }
+  final nameRegex = RegExp(r'^[a-zA-Z][a-zA-Z ]+[a-zA-Z]$');
+  return nameRegex.hasMatch(name);
+}
+
+bool validateUsername(String username) {
+  if (username.trim() == "") {
+    return false;
+  }
+  final nameRegex = RegExp(r'^[a-zA-Z][a-zA-Z._]+[a-zA-Z]$');
+  return nameRegex.hasMatch(username);
+}
+
+bool validateBio(String bio) {
+  return bio.trim().length < 180;
+}

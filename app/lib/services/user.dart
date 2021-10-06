@@ -12,11 +12,11 @@ final GoogleSignIn _googleSignIn = GoogleSignIn(
   ],
 );
 
-Future<String?> onboard() async {
+Future<Map> onboard() async {
   try {
     final account = await _googleSignIn.signIn();
     if (account == null) {
-      return "We couldn't login. Please try again soon!";
+      return {"error": "We couldn't login. Please try again soon!"};
     }
     final response = await http.post(
       Uri.parse("$backendUrl/onboard"),
@@ -26,16 +26,25 @@ Future<String?> onboard() async {
       }),
     );
     if (response.statusCode != 200) {
-      return response.body;
+      return {"error": response.body};
     }
-    secureStorage.setJwt(json.decode(response.body));
+    final responseBody = json.decode(response.body);
+    secureStorage.setJwt(responseBody["token"]);
+    return {
+      "name": responseBody["name"],
+      "username": responseBody["username"],
+      "bio": responseBody["Bio"],
+    };
   } catch (err) {
-    return "We couldn't login. Please try again soon!";
+    return {"error": "We couldn't login. Please try again soon!"};
   }
 }
 
 Future<String?> updateProfile(
-    String? name, String? username, String? bio) async {
+  String? name,
+  String? username,
+  String? bio,
+) async {
   try {
     final response = await http.post(
       Uri.parse("$backendUrl/user"),

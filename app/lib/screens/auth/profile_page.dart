@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/screens/auth/page_wrapper.dart';
 import 'package:app/theme.dart';
 import 'package:app/widgets/input_field.dart';
@@ -9,10 +10,16 @@ class ProfilePage extends StatelessWidget {
     required this.bioController,
     required this.nameController,
     required this.usernameController,
+    required this.invalidBio,
+    required this.invalidName,
+    required this.invalidUserame,
   }) : super(key: key);
   final TextEditingController bioController;
   final TextEditingController nameController;
   final TextEditingController usernameController;
+  final bool invalidBio;
+  final bool invalidName;
+  final bool invalidUserame;
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +37,24 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 50),
-            InputField(tag: 'Name', controller: nameController),
-            InputField(tag: 'Username', controller: usernameController),
-            InputField(tag: 'Bio', controller: bioController),
+            InputField(
+              tag: 'Name',
+              controller: nameController,
+              invalidValue: invalidName,
+              errorKey: InputFieldErrorMessageKey.name,
+            ),
+            InputField(
+              tag: 'Username',
+              controller: usernameController,
+              invalidValue: invalidUserame,
+              errorKey: InputFieldErrorMessageKey.username,
+            ),
+            InputField(
+              tag: 'Bio',
+              controller: bioController,
+              invalidValue: invalidBio,
+              errorKey: InputFieldErrorMessageKey.bio,
+            ),
           ],
         ),
       ),

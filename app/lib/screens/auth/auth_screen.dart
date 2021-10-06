@@ -26,6 +26,9 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  bool invalidName = false;
+  bool invalidUsername = false;
+  bool invalidBio = false;
   String ctaText = "Chaliye shuru karte hain";
   double scale = 1;
   double firstDotWidth = Dot.maxWidth;
@@ -33,15 +36,21 @@ class _AuthScreenState extends State<AuthScreen> {
   double thirdDotWidth = Dot.minWidth;
 
   void chaloShuruKaro() async {
-    final error = await onboard();
-    if (error != null) {
-      showSnackBar(context: context, message: error, type: SnackBarType.error);
+    final response = await onboard();
+    if (response["error"] != null) {
+      showSnackBar(
+          context: context,
+          message: response["error"],
+          type: SnackBarType.error);
     } else {
       setState(() {
         scale = 0;
         firstDotWidth = Dot.minWidth;
         secondDotWidth = Dot.maxWidth;
       });
+      _bioController.text = response["bio"] ?? "";
+      _nameController.text = response["name"];
+      _usernameController.text = response["username"];
       _pageController.animateToPage(
         1,
         duration: animationDuration,
@@ -51,10 +60,30 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void chaloKhatamKaro() async {
-    final error = await updateProfile(
-        _nameController.text, _usernameController.text, _bioController.text);
-    if (error != null) {
-      showSnackBar(context: context, message: error, type: SnackBarType.error);
+    setState(() {
+      if (!validateName(_nameController.text)) {
+        invalidName = true;
+      } else {
+        invalidName = false;
+      }
+      if (!validateUsername(_usernameController.text)) {
+        invalidUsername = true;
+      } else {
+        invalidUsername = false;
+      }
+      if (!validateBio(_bioController.text)) {
+        invalidBio = true;
+      } else {
+        invalidBio = false;
+      }
+    });
+    if (!invalidBio && !invalidName && !invalidUsername) {
+      final error = await updateProfile(
+          _nameController.text, _usernameController.text, _bioController.text);
+      if (error != null) {
+        showSnackBar(
+            context: context, message: error, type: SnackBarType.error);
+      }
     }
   }
 
@@ -104,6 +133,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       bioController: _bioController,
                       nameController: _nameController,
                       usernameController: _usernameController,
+                      invalidBio: invalidBio,
+                      invalidName: invalidName,
+                      invalidUserame: invalidUsername,
                     ),
                   ],
                 ),

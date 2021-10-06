@@ -11,6 +11,5 @@ class SecureStorage {
 
   Future<void> setJwt(token) async {
     await _secureStorage.write(key: "jwt", value: token);
-    print(token + "***************");
   }
 }
