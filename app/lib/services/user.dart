@@ -29,18 +29,54 @@ Future<Map> onboard() async {
       return {"error": response.body};
     }
     final responseBody = json.decode(response.body);
-    secureStorage.setJwt(responseBody["token"]);
+    storage.setJwt(responseBody["token"]);
+    await storage.setUserDetails(
+      bio: responseBody["bio"],
+      email: account.email,
+      name: responseBody["name"],
+      username: responseBody["username"],
+    );
     return {
+      "bio": responseBody["bio"],
+      "email": responseBody["email"],
       "name": responseBody["name"],
       "username": responseBody["username"],
-      "bio": responseBody["Bio"],
     };
   } catch (err) {
     return {"error": "We couldn't login. Please try again soon!"};
   }
 }
 
-Future<String?> updateProfile(
+Future<Map> getUser() async {
+  try {
+    final response = await http.get(
+      Uri.parse("$backendUrl/user"),
+      headers: {
+        HttpHeaders.authorizationHeader: await storage.jwt ?? '',
+      },
+    );
+    if (response.statusCode != 200) {
+      return {};
+    }
+    final responseBody = json.decode(response.body);
+    await storage.setUserDetails(
+      bio: responseBody["bio"],
+      email: responseBody["email"],
+      name: responseBody["name"],
+      username: responseBody["username"],
+    );
+    return {
+      "bio": responseBody["bio"],
+      "email": responseBody["email"],
+      "name": responseBody["name"],
+      "username": responseBody["username"],
+    };
+  } catch (err) {
+    return {};
+  }
+}
+
+Future<Map> updateProfile(
   String? name,
   String? username,
   String? bio,
@@ -49,7 +85,7 @@ Future<String?> updateProfile(
     final response = await http.post(
       Uri.parse("$backendUrl/user"),
       headers: {
-        HttpHeaders.authorizationHeader: await secureStorage.jwt ?? '',
+        HttpHeaders.authorizationHeader: await storage.jwt ?? '',
       },
       body: jsonEncode(<String, String>{
         "name": name ?? "",
@@ -57,10 +93,23 @@ Future<String?> updateProfile(
         "bio": bio ?? "",
       }),
     );
+    final responseBody = json.decode(response.body);
     if (response.statusCode != 200) {
-      return response.body;
+      return {"error": responseBody["error"]};
     }
+    await storage.setUserDetails(
+      bio: responseBody["bio"],
+      email: responseBody["email"],
+      name: responseBody["name"],
+      username: responseBody["username"],
+    );
+    return {
+      "bio": responseBody["bio"],
+      "email": responseBody["email"],
+      "name": responseBody["name"],
+      "username": responseBody["username"],
+    };
   } catch (err) {
-    return "We couldn't login. Please try again soon!";
+    return {"error": "We couldn't login. Please try again soon!"};
   }
 }

@@ -3,6 +3,7 @@ import 'package:app/screens/auth/indicators.dart';
 import 'package:app/screens/auth/loading_page.dart';
 import 'package:app/screens/auth/login_page.dart';
 import 'package:app/screens/auth/profile_page.dart';
+import 'package:app/screens/home/home_screen.dart';
 import 'package:app/services/user.dart';
 import 'package:app/theme.dart';
 import 'package:app/utils.dart';
@@ -78,11 +79,15 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     });
     if (!invalidBio && !invalidName && !invalidUsername) {
-      final error = await updateProfile(
+      final response = await updateProfile(
           _nameController.text, _usernameController.text, _bioController.text);
-      if (error != null) {
+      if (response["error"] != null) {
         showSnackBar(
-            context: context, message: error, type: SnackBarType.error);
+            context: context,
+            message: response["error"],
+            type: SnackBarType.error);
+      } else {
+        Navigator.pushReplacementNamed(context, HomeScreen.route);
       }
     }
   }

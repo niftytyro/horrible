@@ -13,6 +13,6 @@ func Init() {
 	db.Init()
 	router := http.NewServeMux()
 	router.HandleFunc("/onboard", loginHandler)
-	router.HandleFunc("/user", isAuthorized(updateHandler))
+	router.HandleFunc("/user", isAuthorized(userHandler))
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

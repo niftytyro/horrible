@@ -1,4 +1,5 @@
 import 'package:app/screens/auth/auth_screen.dart';
+import 'package:app/screens/home/home_screen.dart';
 import 'package:app/screens/splash/splash_screen.dart';
 import 'package:app/theme.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         routes: {
           SplashScreen.route: (context) => const SplashScreen(),
           AuthScreen.route: (context) => const AuthScreen(),
+          HomeScreen.route: (context) => const HomeScreen(),
         },
         initialRoute: SplashScreen.route,
         debugShowCheckedModeBanner: false,

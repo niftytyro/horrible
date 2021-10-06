@@ -24,18 +24,20 @@ type AuthTokenClaims struct {
 	jwt.StandardClaims
 }
 
-type UpdateBody struct {
+type UpdateResponse struct {
 	Bio      string `json:"bio,omitempty"`
 	Email    string `json:"email,omitempty"`
 	Name     string `json:"name,omitempty"`
 	Username string `json:"username,omitempty"`
+	Error    string `json:"error,omitempty"`
 }
 
-type loginHandlerResponse struct {
-	Name     string `json:"name"`
-	Username string `json:"username"`
+type LoginResponse struct {
 	Bio      string `json:"bio"`
+	Name     string `json:"name"`
 	Token    string `json:"token"`
+	Username string `json:"username"`
+	Error    string `json:"error"`
 }
 
 func loginHandler(res http.ResponseWriter, req *http.Request) {
@@ -44,12 +46,15 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var data AuthBody
+	var response LoginResponse
+	res.Header().Set("Content-Type", "application/json")
 
 	decoder := json.NewDecoder(req.Body)
 	err := decoder.Decode(&data)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		res.Write([]byte("could not parse body"))
+		response.Error = "Could not parse body"
+		json.NewEncoder(res).Encode(response)
 		return
 	}
 
@@ -57,12 +62,14 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 	data.Name = strings.TrimSpace(data.Name)
 	if !validateEmail(data.Email, false) {
 		res.WriteHeader(http.StatusBadRequest)
-		res.Write([]byte("invalid email"))
+		response.Error = "Invalid email"
+		json.NewEncoder(res).Encode(response)
 		return
 	}
 	if !validateName(data.Name, true) {
 		res.WriteHeader(http.StatusBadRequest)
-		res.Write([]byte("invalid name"))
+		response.Error = "Invalid name"
+		json.NewEncoder(res).Encode(response)
 		return
 	}
 
@@ -89,69 +96,100 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 
-	res.Header().Set("Content-Type", "application/json")
-	response := loginHandlerResponse{Name: user.Name, Username: user.Username, Bio: user.Bio, Token: tokenString}
+	response.Bio = user.Bio
+	response.Name = user.Name
+	response.Token = tokenString
+	response.Username = user.Username
 	json.NewEncoder(res).Encode(response)
 }
 
-func updateHandler(res http.ResponseWriter, req *http.Request) {
-	var data UpdateBody
+func userHandler(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	var response UpdateResponse
+
 	id, err := strconv.Atoi(req.Header["Id"][0])
-
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		res.Write([]byte("bad token"))
+		response.Error = "Bad token"
 		return
 	}
 
-	decoder := json.NewDecoder(req.Body)
-	err = decoder.Decode(&data)
+	if req.Method == http.MethodGet {
 
-	if err != nil {
-		res.WriteHeader(http.StatusBadRequest)
-		res.Write([]byte("could not parse body"))
-	}
+		var user models.User
+		db := db.GetDB()
+		db.First(&user, "id = ?", id)
+		if user.Email == "" {
+			res.WriteHeader(http.StatusNotFound)
+			response.Error = "User not found"
+			return
+		}
+		res.Header().Set("Content-Type", "application/json")
+		response.Bio = user.Bio
+		response.Email = user.Email
+		response.Name = user.Name
+		response.Username = user.Username
+		json.NewEncoder(res).Encode(response)
 
-	data.Email = strings.TrimSpace(data.Email)
-	data.Name = strings.TrimSpace(data.Name)
-	data.Username = strings.TrimSpace(data.Username)
-	data.Bio = strings.TrimSpace(data.Bio)
-	if !validateEmail(data.Email, true) {
-		res.WriteHeader(http.StatusBadRequest)
-		res.Write([]byte("invalid email"))
+	} else if req.Method == http.MethodPost {
+
+		var data UpdateResponse
+		decoder := json.NewDecoder(req.Body)
+		err = decoder.Decode(&data)
+		if err != nil {
+			res.WriteHeader(http.StatusBadRequest)
+			response.Error = "Could not parse body"
+			return
+		}
+
+		data.Email = strings.TrimSpace(data.Email)
+		data.Name = strings.TrimSpace(data.Name)
+		data.Username = strings.TrimSpace(data.Username)
+		data.Bio = strings.TrimSpace(data.Bio)
+		if !validateEmail(data.Email, true) {
+			res.WriteHeader(http.StatusBadRequest)
+			response.Error = "Invalid email"
+			return
+		}
+		if !validateName(data.Name, true) {
+			res.WriteHeader(http.StatusBadRequest)
+			response.Error = "Invalid name"
+			return
+		}
+		if !validateUsername(data.Username, true) {
+			res.WriteHeader(http.StatusBadRequest)
+			response.Error = "Invalid username"
+			return
+		}
+
+		var user models.User
+		db := db.GetDB()
+		db.First(&user, "id = ?", id)
+		if user.Email == "" {
+			res.WriteHeader(http.StatusNotFound)
+			response.Error = "User not found"
+			return
+		}
+
+		if data.Bio != "" {
+			db.Model(&user).Update("bio", data.Bio)
+		}
+		if data.Email != "" {
+			db.Model(&user).Update("email", data.Email)
+		}
+		if data.Name != "" {
+			db.Model(&user).Update("name", data.Name)
+		}
+		if data.Username != "" {
+			db.Model(&user).Update("username", data.Username)
+		}
+
+		json.NewEncoder(res).Encode(response)
+
+	} else {
+
+		res.WriteHeader(http.StatusMethodNotAllowed)
 		return
-	}
-	if !validateName(data.Name, true) {
-		res.WriteHeader(http.StatusBadRequest)
-		res.Write([]byte("invalid name"))
-		return
-	}
-	if !validateUsername(data.Username, true) {
-		res.WriteHeader(http.StatusBadRequest)
-		res.Write([]byte("invalid username"))
-		return
-	}
 
-	var user models.User
-	db := db.GetDB()
-	db.First(&user, "id = ?", id)
-
-	if user.Email == "" {
-		res.WriteHeader(http.StatusNotFound)
-		res.Write([]byte("user not found"))
-		return
-	}
-
-	if data.Bio != "" {
-		db.Model(&user).Update("bio", data.Bio)
-	}
-	if data.Email != "" {
-		db.Model(&user).Update("email", data.Email)
-	}
-	if data.Name != "" {
-		db.Model(&user).Update("name", data.Name)
-	}
-	if data.Username != "" {
-		db.Model(&user).Update("username", data.Username)
 	}
 }
