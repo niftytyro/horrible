@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String name = storage.name ?? "";
+
   @override
   void initState() {
     super.initState();

@@ -120,4 +120,10 @@ class _InputFieldState extends State<InputField> {
       ],
     );
   }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 }

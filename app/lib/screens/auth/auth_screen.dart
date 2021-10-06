@@ -188,6 +188,9 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _bioController.dispose();
+    _nameController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 }
