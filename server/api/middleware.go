@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/golang-jwt/jwt"
 )
@@ -21,7 +20,6 @@ func isAuthorized(next http.HandlerFunc) http.HandlerFunc {
 				if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("error while parsing")
 				}
-				fmt.Println(time.Now().Add(time.Hour * 2).Unix())
 				return []byte(os.Getenv("JWT_SECRET")), nil
 			})
 
@@ -33,7 +31,7 @@ func isAuthorized(next http.HandlerFunc) http.HandlerFunc {
 
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 				id := fmt.Sprint(claims["id"])
-				req.Header.Set("id", id)
+				req.Header.Set("Id", id)
 				next.ServeHTTP(res, req)
 			}
 		},

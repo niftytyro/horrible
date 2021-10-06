@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,7 +29,6 @@ type UpdateBody struct {
 	Email    string `json:"email,omitempty"`
 	Name     string `json:"name,omitempty"`
 	Username string `json:"username,omitempty"`
-	Id       string
 }
 
 func loginHandler(res http.ResponseWriter, req *http.Request) {
@@ -88,9 +88,16 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 
 func updateHandler(res http.ResponseWriter, req *http.Request) {
 	var data UpdateBody
+	id, err := strconv.Atoi(req.Header["Id"][0])
+
+	if err != nil {
+		res.WriteHeader(http.StatusBadRequest)
+		res.Write([]byte("bad token"))
+		return
+	}
 
 	decoder := json.NewDecoder(req.Body)
-	err := decoder.Decode(&data)
+	err = decoder.Decode(&data)
 
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
@@ -116,13 +123,10 @@ func updateHandler(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("invalid username"))
 		return
 	}
-	if data.Id == "" {
-		panic("user id not available")
-	}
 
 	var user models.User
 	db := db.GetDB()
-	db.First(user, "id = ?", data.Id)
+	db.First(&user, "id = ?", id)
 
 	if user.Email == "" {
 		res.WriteHeader(http.StatusNotFound)
