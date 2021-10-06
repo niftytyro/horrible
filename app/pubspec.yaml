@@ -31,7 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_secure_storage: ^4.2.1
-  google_fonts: ^2.1.0
   google_sign_in: ^5.1.1
   http: ^0.13.4
   localstorage: ^4.0.0+1
