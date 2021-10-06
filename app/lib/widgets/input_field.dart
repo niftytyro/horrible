@@ -42,7 +42,11 @@ class _InputFieldState extends State<InputField> {
                 horizontal: BrickSpacing.m, vertical: BrickSpacing.s),
             height: 45,
             decoration: BoxDecoration(
-              border: Border.all(color: BrickColors.black40),
+              border: Border.all(
+                color: _focusNode.hasFocus
+                    ? BrickColors.vividVioletLight
+                    : BrickColors.black20,
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -54,7 +58,14 @@ class _InputFieldState extends State<InputField> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             color: BrickColors.white,
-            child: Text(widget.tag),
+            child: Text(
+              widget.tag,
+              style: BrickTheme.textTheme.bodyText1?.copyWith(
+                color: _focusNode.hasFocus
+                    ? BrickColors.vividVioletLight
+                    : BrickColors.black40,
+              ),
+            ),
           ),
         ),
         Padding(
