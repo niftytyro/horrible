@@ -31,6 +31,13 @@ type UpdateBody struct {
 	Username string `json:"username,omitempty"`
 }
 
+type loginHandlerResponse struct {
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Bio      string `json:"bio"`
+	Token    string `json:"token"`
+}
+
 func loginHandler(res http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		res.WriteHeader(http.StatusMethodNotAllowed)
@@ -65,7 +72,7 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 	db.First(&user, "email = ?", data.Email)
 
 	if user.Email == "" {
-		db.Create(&models.User{Email: data.Email, Name: data.Name})
+		db.Create(&models.User{Email: data.Email, Name: data.Name, Username: generateUsername(data.Name, db)})
 		db.First(&user, "email = ?", data.Email)
 	}
 
@@ -83,7 +90,8 @@ func loginHandler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(res).Encode(tokenString)
+	response := loginHandlerResponse{Name: user.Name, Username: user.Username, Bio: user.Bio, Token: tokenString}
+	json.NewEncoder(res).Encode(response)
 }
 
 func updateHandler(res http.ResponseWriter, req *http.Request) {
