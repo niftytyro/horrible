@@ -44,14 +44,13 @@ Future<String?> updateProfile(
       },
       body: jsonEncode(<String, String>{
         "name": name ?? "",
-        "username": name ?? "",
-        "bio": name ?? "",
+        "username": username ?? "",
+        "bio": bio ?? "",
       }),
     );
     if (response.statusCode != 200) {
       return response.body;
     }
-    secureStorage.setJwt(response.body);
   } catch (err) {
     return "We couldn't login. Please try again soon!";
   }

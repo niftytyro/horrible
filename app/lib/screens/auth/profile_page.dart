@@ -4,7 +4,15 @@ import 'package:app/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({
+    Key? key,
+    required this.bioController,
+    required this.nameController,
+    required this.usernameController,
+  }) : super(key: key);
+  final TextEditingController bioController;
+  final TextEditingController nameController;
+  final TextEditingController usernameController;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +30,9 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 50),
-            InputField(tag: 'Name'),
-            InputField(tag: 'Username'),
-            InputField(tag: 'Bio'),
+            InputField(tag: 'Name', controller: nameController),
+            InputField(tag: 'Username', controller: usernameController),
+            InputField(tag: 'Bio', controller: bioController),
           ],
         ),
       ),

@@ -5,15 +5,16 @@ class InputField extends StatefulWidget {
   InputField({
     Key? key,
     required this.tag,
+    required this.controller,
   }) : super(key: key);
   final String tag;
 
+  final TextEditingController controller;
   @override
   State<InputField> createState() => _InputFieldState();
 }
 
 class _InputFieldState extends State<InputField> {
-  final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool shouldFloat = false;
 
@@ -24,7 +25,7 @@ class _InputFieldState extends State<InputField> {
       setState(() {
         if (_focusNode.hasFocus) {
           shouldFloat = true;
-        } else if (_controller.text == '') {
+        } else if (widget.controller.text == '') {
           shouldFloat = false;
         }
       });
@@ -74,7 +75,7 @@ class _InputFieldState extends State<InputField> {
             vertical: BrickSpacing.s,
           ),
           child: TextField(
-            controller: _controller,
+            controller: widget.controller,
             focusNode: _focusNode,
             decoration: const InputDecoration(
               border: InputBorder.none,

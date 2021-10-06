@@ -3,8 +3,9 @@ import 'package:app/screens/auth/indicators.dart';
 import 'package:app/screens/auth/loading_page.dart';
 import 'package:app/screens/auth/login_page.dart';
 import 'package:app/screens/auth/profile_page.dart';
-import 'package:app/services/onboarding.dart';
+import 'package:app/services/user.dart';
 import 'package:app/theme.dart';
+import 'package:app/utils.dart';
 import 'package:app/widgets/resizable_arrow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,22 +23,19 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final PageController _pageController = PageController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  String ctaText = "Chaliye shuru karte hain";
   double scale = 1;
   double firstDotWidth = Dot.maxWidth;
   double secondDotWidth = Dot.minWidth;
   double thirdDotWidth = Dot.minWidth;
-  String message = "";
 
   void chaloShuruKaro() async {
     final error = await onboard();
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error),
-          backgroundColor: BrickColors.englishRusk,
-          padding: const EdgeInsets.all(BrickSpacing.l1),
-        ),
-      );
+      showSnackBar(context: context, message: error, type: SnackBarType.error);
     } else {
       setState(() {
         scale = 0;
@@ -52,13 +50,12 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  void chaloKhatamKaro() {
-    // NOTE: this is just for dev purposes
-    _pageController.jumpToPage(0);
-    setState(() {
-      firstDotWidth = Dot.maxWidth;
-      thirdDotWidth = Dot.minWidth;
-    });
+  void chaloKhatamKaro() async {
+    final error = await updateProfile(
+        _nameController.text, _usernameController.text, _bioController.text);
+    if (error != null) {
+      showSnackBar(context: context, message: error, type: SnackBarType.error);
+    }
   }
 
   @override
@@ -94,6 +91,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           scale = 1;
                           secondDotWidth = Dot.minWidth;
                           thirdDotWidth = Dot.maxWidth;
+                          ctaText = "Welcome onboard";
                         });
                         _pageController.animateToPage(
                           2,
@@ -102,7 +100,11 @@ class _AuthScreenState extends State<AuthScreen> {
                         );
                       },
                     ),
-                    const ProfilePage(),
+                    ProfilePage(
+                      bioController: _bioController,
+                      nameController: _nameController,
+                      usernameController: _usernameController,
+                    ),
                   ],
                 ),
               ),
@@ -125,8 +127,8 @@ class _AuthScreenState extends State<AuthScreen> {
                           chaloKhatamKaro();
                         }
                       },
-                      child: const ResizableArrow(
-                        text: 'Chaliye shuru karte hain',
+                      child: ResizableArrow(
+                        text: ctaText,
                       ),
                     ),
                   ),
