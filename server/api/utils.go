@@ -34,12 +34,24 @@ func validateUsername(username string, allowEmpty bool) bool {
 }
 
 func generateUsername(name string, db *gorm.DB) string {
-	firstName := name[0:strings.Index(name, " ")]
-	lastName := strings.TrimSpace(name[strings.Index(name, " "):])
+	firstName := strings.ToLower(name)[0:strings.Index(name, " ")]
+	lastName := strings.TrimSpace(strings.ToLower(name)[strings.Index(name, " "):])
 	var user models.User
 	idx := 0
 	for ; user.Email != ""; idx++ {
 		db.First(&user, "username = ?", firstName+strings.Repeat("_", idx)+lastName)
 	}
 	return firstName + strings.Repeat("_", idx) + lastName
+}
+
+func nthIndex(text string, subtext string, n int) int {
+	index := -1
+	for count := 0; count < n; count++ {
+		newIndex := strings.Index(text[index+1:], subtext)
+		if newIndex == -1 {
+			return -1
+		}
+		index = newIndex + index + 1
+	}
+	return index
 }
