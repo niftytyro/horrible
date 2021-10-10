@@ -98,7 +98,7 @@ Future<Map> updateProfile(
       return {"error": responseBody["error"]};
     }
     await storage.setUserDetails(
-      bio: responseBody["bio"],
+      bio: responseBody["bio"] ?? "",
       email: responseBody["email"],
       name: responseBody["name"],
       username: responseBody["username"],
