@@ -10,10 +10,13 @@ The Crazy Chat App
   - [x] Profile Update Page
   - [x] Input Validation
   - [x] Backend Integration
-  - [ ] Using Provider
-  - [ ] Tests
 - [ ] Home
 - [ ] Search
 - [ ] Chat
 - [ ] Friend's profile
 - [ ] Settings
+
+### TODO
+
+- [ ] Using Provider
+- [ ] Tests
