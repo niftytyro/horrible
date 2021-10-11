@@ -3,7 +3,7 @@ import 'package:app/theme.dart';
 import 'package:flutter/material.dart';
 
 class InputField extends StatefulWidget {
-  InputField({
+  const InputField({
     Key? key,
     required this.tag,
     required this.controller,
@@ -67,7 +67,7 @@ class _InputFieldState extends State<InputField> {
                 ),
                 if (widget.errorKey != null)
                   AnimatedContainer(
-                    duration: animationDuration,
+                    duration: shortAnimationDuration,
                     padding: const EdgeInsets.only(left: BrickSpacing.xs),
                     constraints: BoxConstraints(
                       maxHeight: widget.invalidValue ? BrickSpacing.l : 0,
