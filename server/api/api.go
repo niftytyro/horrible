@@ -12,8 +12,8 @@ func Init() {
 	config.Init()
 	db.Init()
 	router := http.NewServeMux()
-	router.HandleFunc("/search/", searchHandler)
+	router.HandleFunc("/search", searchHandler)
 	router.HandleFunc("/onboard", onboardingHandler)
-	router.HandleFunc("/user", isAuthorized(userHandler))
+	router.HandleFunc("/user/", isAuthorized(userHandler))
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
