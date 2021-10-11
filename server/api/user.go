@@ -209,7 +209,7 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		if data.Username != "" {
+		if data.Username != "" && data.Username != user.Username {
 			var userWithNewUsername models.User
 			db.First(&userWithNewUsername, "username = ?", data.Username)
 			if userWithNewUsername.Email == "" {
@@ -218,9 +218,10 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 				res.WriteHeader(http.StatusBadRequest)
 				response.Error = "username already in use"
 				responseEncoder.Encode(response)
+				return
 			}
 		}
-		if data.Email != "" {
+		if data.Email != "" && data.Email != user.Email {
 			var userWithNewEmail models.User
 			db.First(&userWithNewEmail, "email = ?", data.Email)
 			if userWithNewEmail.Email == "" {
@@ -229,6 +230,7 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 				res.WriteHeader(http.StatusBadRequest)
 				response.Error = "email already in use"
 				responseEncoder.Encode(response)
+				return
 			}
 		}
 		if data.Bio != "" {
