@@ -38,10 +38,13 @@ func generateUsername(name string, db *gorm.DB) string {
 	lastName := strings.TrimSpace(strings.ToLower(name)[strings.Index(name, " "):])
 	var user models.User
 	idx := 0
-	for ; user.Email != ""; idx++ {
+	db.First(&user, "username = ?", firstName+strings.Repeat("_", idx)+lastName)
+	idx++
+	for ; user.Email != "" && idx <= 10; idx++ {
+		user = models.User{}
 		db.First(&user, "username = ?", firstName+strings.Repeat("_", idx)+lastName)
 	}
-	return firstName + strings.Repeat("_", idx) + lastName
+	return firstName + strings.Repeat("_", idx-1) + lastName
 }
 
 func nthIndex(text string, subtext string, n int) int {

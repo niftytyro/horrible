@@ -59,16 +59,17 @@ func onboardingHandler(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	res.Header().Set("Content-Type", "application/json")
 	var data OnboardingRequest
 	var response OnboardingResponse
-	res.Header().Set("Content-Type", "application/json")
+	responseEncoder := json.NewEncoder(res)
 
 	decoder := json.NewDecoder(req.Body)
 	err := decoder.Decode(&data)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
 		response.Error = "Could not parse body"
-		json.NewEncoder(res).Encode(response)
+		responseEncoder.Encode(response)
 		return
 	}
 
@@ -77,13 +78,13 @@ func onboardingHandler(res http.ResponseWriter, req *http.Request) {
 	if !validateEmail(data.Email, false) {
 		res.WriteHeader(http.StatusBadRequest)
 		response.Error = "Invalid email"
-		json.NewEncoder(res).Encode(response)
+		responseEncoder.Encode(response)
 		return
 	}
 	if !validateName(data.Name, true) {
 		res.WriteHeader(http.StatusBadRequest)
 		response.Error = "Invalid name"
-		json.NewEncoder(res).Encode(response)
+		responseEncoder.Encode(response)
 		return
 	}
 
@@ -114,18 +115,19 @@ func onboardingHandler(res http.ResponseWriter, req *http.Request) {
 	response.Name = user.Name
 	response.Token = tokenString
 	response.Username = user.Username
-	json.NewEncoder(res).Encode(response)
+	responseEncoder.Encode(response)
 }
 
 func userHandler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	var response UserResponse
+	responseEncoder := json.NewEncoder(res)
 
 	id, err := strconv.Atoi(req.Header["Id"][0])
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
 		response.Error = "Bad token"
-		json.NewEncoder(res).Encode(response)
+		responseEncoder.Encode(response)
 		return
 	}
 
@@ -142,7 +144,7 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				res.WriteHeader(http.StatusBadRequest)
 				response.Error = "Bad url"
-				json.NewEncoder(res).Encode(response)
+				responseEncoder.Encode(response)
 				return
 			}
 		}
@@ -151,7 +153,7 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 		if user.Email == "" {
 			res.WriteHeader(http.StatusNotFound)
 			response.Error = "User not found"
-			json.NewEncoder(res).Encode(response)
+			responseEncoder.Encode(response)
 			return
 		}
 		response.Bio = user.Bio
@@ -159,7 +161,7 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 		response.Name = user.Name
 		response.Username = user.Username
 		response.ID = int(user.ID)
-		json.NewEncoder(res).Encode(response)
+		responseEncoder.Encode(response)
 
 	} else if req.Method == http.MethodPost {
 		res.Header().Set("Content-Type", "application/json")
@@ -170,7 +172,7 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			res.WriteHeader(http.StatusBadRequest)
 			response.Error = "Could not parse body"
-			json.NewEncoder(res).Encode(response)
+			responseEncoder.Encode(response)
 			return
 		}
 
@@ -181,19 +183,19 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 		if !validateEmail(data.Email, true) {
 			res.WriteHeader(http.StatusBadRequest)
 			response.Error = "Invalid email"
-			json.NewEncoder(res).Encode(response)
+			responseEncoder.Encode(response)
 			return
 		}
 		if !validateName(data.Name, true) {
 			res.WriteHeader(http.StatusBadRequest)
 			response.Error = "Invalid name"
-			json.NewEncoder(res).Encode(response)
+			responseEncoder.Encode(response)
 			return
 		}
 		if !validateUsername(data.Username, true) {
 			res.WriteHeader(http.StatusBadRequest)
 			response.Error = "Invalid username"
-			json.NewEncoder(res).Encode(response)
+			responseEncoder.Encode(response)
 			return
 		}
 
@@ -203,21 +205,37 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 		if user.Email == "" {
 			res.WriteHeader(http.StatusNotFound)
 			response.Error = "User not found"
-			json.NewEncoder(res).Encode(response)
+			responseEncoder.Encode(response)
 			return
 		}
 
+		if data.Username != "" {
+			var userWithNewUsername models.User
+			db.First(&userWithNewUsername, "username = ?", data.Username)
+			if userWithNewUsername.Email == "" {
+				db.Model(&user).Update("username", data.Username)
+			} else {
+				res.WriteHeader(http.StatusBadRequest)
+				response.Error = "username already in use"
+				responseEncoder.Encode(response)
+			}
+		}
+		if data.Email != "" {
+			var userWithNewEmail models.User
+			db.First(&userWithNewEmail, "email = ?", data.Email)
+			if userWithNewEmail.Email == "" {
+				db.Model(&user).Update("email", data.Email)
+			} else {
+				res.WriteHeader(http.StatusBadRequest)
+				response.Error = "email already in use"
+				responseEncoder.Encode(response)
+			}
+		}
 		if data.Bio != "" {
 			db.Model(&user).Update("bio", data.Bio)
 		}
-		if data.Email != "" {
-			db.Model(&user).Update("email", data.Email)
-		}
 		if data.Name != "" {
 			db.Model(&user).Update("name", data.Name)
-		}
-		if data.Username != "" {
-			db.Model(&user).Update("username", data.Username)
 		}
 
 		response.Bio = user.Bio
@@ -225,7 +243,7 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 		response.Name = user.Name
 		response.Username = user.Username
 		response.ID = int(user.ID)
-		json.NewEncoder(res).Encode(response)
+		responseEncoder.Encode(response)
 
 	} else {
 
@@ -237,12 +255,13 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 
 func searchHandler(res http.ResponseWriter, req *http.Request) {
 
-	var response SearchResponse
-
 	if req.Method != http.MethodGet {
 		res.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+
+	res.Header().Set("Content-Type", "application/json")
+	var response SearchResponse
 
 	query := strings.ToLower(req.URL.Query().Get("q"))
 	offset, err := strconv.Atoi(req.URL.Query().Get("offset"))
