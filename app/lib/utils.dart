@@ -1,3 +1,4 @@
+import 'package:app/services/storage.dart';
 import 'package:app/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -35,4 +36,8 @@ bool validateUsername(String username) {
 
 bool validateBio(String bio) {
   return bio.trim().length < 180;
+}
+
+String firstName() {
+  return (storage.name ?? "").split(" ")[0];
 }
