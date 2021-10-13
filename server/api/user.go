@@ -49,11 +49,6 @@ type UserResponse struct {
 	Error    string `json:"error"`
 }
 
-type SearchResponse struct {
-	Users []UserResponse `json:"users"`
-	Error string         `json:"error"`
-}
-
 func onboardingHandler(res http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		res.WriteHeader(http.StatusMethodNotAllowed)
@@ -263,7 +258,6 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", "application/json")
-	var response SearchResponse
 
 	query := strings.ToLower(req.URL.Query().Get("q"))
 	offset, err := strconv.Atoi(req.URL.Query().Get("offset"))
@@ -282,15 +276,5 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 	db := db.GetDB()
 	db.Where("LOWER(name) LIKE ?", fmt.Sprintf("%%%s%%", query)).Offset(offset).Limit(limit).Find(&users)
 
-	for i := 0; i < len(users); i++ {
-		response.Users = append(response.Users, UserResponse{
-			ID:       int(users[i].ID),
-			Bio:      users[i].Bio,
-			Email:    users[i].Email,
-			Name:     users[i].Name,
-			Username: users[i].Username,
-		})
-	}
-
-	json.NewEncoder(res).Encode(response)
+	json.NewEncoder(res).Encode(users)
 }
