@@ -59,7 +59,7 @@ class _InputFieldState extends State<InputField> {
                       color: widget.invalidValue
                           ? BrickColors.notRed
                           : _focusNode.hasFocus
-                              ? BrickColors.vividVioletLight
+                              ? BrickColors.englishRuskLight
                               : BrickColors.black20,
                     ),
                     borderRadius: BorderRadius.circular(10),
@@ -98,7 +98,7 @@ class _InputFieldState extends State<InputField> {
                 color: widget.invalidValue
                     ? BrickColors.notRed
                     : _focusNode.hasFocus
-                        ? BrickColors.vividVioletLight
+                        ? BrickColors.englishRuskLight
                         : BrickColors.black40,
               ),
             ),
