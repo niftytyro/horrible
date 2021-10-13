@@ -1,4 +1,6 @@
 import 'package:app/screens/auth/auth_screen.dart';
+import 'package:app/screens/home/home_screen.dart';
+import 'package:app/services/storage.dart';
 import 'package:app/widgets/app_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -16,8 +18,13 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     timeDilation = 3;
-    Future.delayed(const Duration(seconds: 3),
-        () => Navigator.pushReplacementNamed(context, AuthScreen.route));
+    Future.delayed(const Duration(seconds: 2), () async {
+      if ((await storage.jwt) == null) {
+        Navigator.pushReplacementNamed(context, AuthScreen.route);
+      } else {
+        Navigator.pushReplacementNamed(context, HomeScreen.route);
+      }
+    });
   }
 
   @override
