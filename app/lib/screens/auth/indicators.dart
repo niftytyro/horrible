@@ -54,7 +54,7 @@ class Dot extends StatelessWidget {
         borderRadius: BorderRadius.circular(
           100,
         ),
-        color: BrickColors.lightPeriwinkle,
+        color: BrickColors.periwinkle,
       ),
     );
   }

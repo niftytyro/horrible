@@ -6,10 +6,11 @@ class BrickColors {
   static const Color notRed = Color(0xFFC83E4D);
   static const Color darkLiver = Color(0xFF483C46);
   static const Color vividViolet = Color(0xFF8447FF);
-  static const Color vividVioletLight = Color(0xFF965DFF);
   static const Color aquamarine = Color(0xFF8CFFDA);
-  static const Color lightPeriwinkle = Color(0xFFCFCFEA);
+  static const Color periwinkle = Color(0xFFCFCFEA);
+  static const Color lightPeriwinkle = Color(0xFFD5D5EA);
   static const Color englishRusk = Color(0xFF413C58);
+  static const Color englishRuskLight = Color(0xFF615C78);
   static const Color white = Color(0xFFF9F9F9);
   static const Color black100 = Color(0xFF121212);
   static const Color black80 = Color(0xFF333333);
@@ -27,9 +28,9 @@ class BrickTheme {
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
           overlayColor:
-              MaterialStateProperty.all<Color>(BrickColors.vividVioletLight),
+              MaterialStateProperty.all<Color>(BrickColors.englishRuskLight),
           backgroundColor:
-              MaterialStateProperty.all<Color>(BrickColors.vividViolet),
+              MaterialStateProperty.all<Color>(BrickColors.englishRusk),
           foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(

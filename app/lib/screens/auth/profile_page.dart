@@ -32,7 +32,7 @@ class ProfilePage extends StatelessWidget {
               height: 200,
               width: 200,
               decoration: BoxDecoration(
-                color: BrickColors.lightPeriwinkle,
+                color: BrickColors.periwinkle,
                 borderRadius: BorderRadius.circular(100),
               ),
             ),
