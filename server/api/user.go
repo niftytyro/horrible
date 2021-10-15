@@ -279,7 +279,12 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 	var users []models.User
 
 	db := db.GetDB()
-	db.Where("LOWER(name) LIKE ?", fmt.Sprintf("%%%s%%", query)).Not("id = ?", id).Offset(offset).Limit(limit).Find(&users)
+	db.Not("id = ?", id).
+		Where("LOWER(name) LIKE ?", fmt.Sprintf("%%%s%%", query)).
+		Or("LOWER(username) LIKE ?", fmt.Sprintf("%%%s%%", query)).
+		Offset(offset).
+		Limit(limit).
+		Find(&users)
 
 	json.NewEncoder(res).Encode(users)
 }
