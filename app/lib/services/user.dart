@@ -129,7 +129,6 @@ Future<SearchResult> search({String? key}) async {
     List<User> users = List<User>.from(res.map((each) => User.fromJson(each)));
     searchResult = SearchResult.fromJson(users);
   } catch (err) {
-    print("ERROR: $err");
     searchResult = SearchResult.fromJson([], error: "Couldn't fetch users.");
   }
   return searchResult;

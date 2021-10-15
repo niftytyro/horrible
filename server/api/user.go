@@ -257,6 +257,12 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("Content-Type", "application/json")
+	id, err := strconv.Atoi(req.Header["Id"][0])
+	if err != nil {
+		res.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(res).Encode([]models.User{})
+		return
+	}
 
 	query := strings.Trim(strings.ToLower(req.URL.Query().Get("q")), " ")
 	offset, err := strconv.Atoi(req.URL.Query().Get("offset"))
@@ -273,7 +279,7 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 	var users []models.User
 
 	db := db.GetDB()
-	db.Where("LOWER(name) LIKE ?", fmt.Sprintf("%%%s%%", query)).Offset(offset).Limit(limit).Find(&users)
+	db.Where("LOWER(name) LIKE ?", fmt.Sprintf("%%%s%%", query)).Not("id = ?", id).Offset(offset).Limit(limit).Find(&users)
 
 	json.NewEncoder(res).Encode(users)
 }

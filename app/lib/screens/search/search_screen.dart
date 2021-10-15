@@ -77,7 +77,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   }).toList(),
                 );
               } else {
-                return const Center(child: Text("Couldn't find any users :/"));
+                return Center(
+                    child: Text(searchKey != ""
+                        ? "Couldn't find any users :/"
+                        : "Go on search for your friends!"));
               }
             }
             return const Center(child: CircularProgressIndicator());
