@@ -258,7 +258,7 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 
 	res.Header().Set("Content-Type", "application/json")
 
-	query := strings.ToLower(req.URL.Query().Get("q"))
+	query := strings.Trim(strings.ToLower(req.URL.Query().Get("q")), " ")
 	offset, err := strconv.Atoi(req.URL.Query().Get("offset"))
 	if err != nil {
 		offset = 0

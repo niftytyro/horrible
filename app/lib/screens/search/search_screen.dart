@@ -16,11 +16,12 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   late Future<SearchResult> results;
+  String searchKey = "";
 
   @override
   void initState() {
     super.initState();
-    results = search();
+    results = search(key: searchKey.trim());
   }
 
   @override
@@ -33,6 +34,7 @@ class _SearchScreenState extends State<SearchScreen> {
         elevation: 0,
         titleSpacing: BrickSpacing.m,
         title: Container(
+          height: 45,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(BrickSpacing.xxl),
             color: BrickColors.white,
@@ -40,25 +42,22 @@ class _SearchScreenState extends State<SearchScreen> {
           padding: const EdgeInsets.symmetric(
             horizontal: BrickSpacing.l1,
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  decoration: const InputDecoration(
-                    hintText: "Search...",
-                    border: InputBorder.none,
-                  ),
-                  style: BrickTheme.textTheme.bodyText1
-                      ?.copyWith(color: BrickColors.black60),
-                  textInputAction: TextInputAction.search,
-                  onSubmitted: (value) {
-                    setState(() {
-                      results = search(key: value);
-                    });
-                  },
-                ),
-              ),
-            ],
+          child: TextField(
+            decoration: const InputDecoration(
+              hintText: "Search...",
+              border: InputBorder.none,
+            ),
+            style: BrickTheme.textTheme.bodyText1
+                ?.copyWith(color: BrickColors.black60),
+            textInputAction: TextInputAction.search,
+            onChanged: (value) {
+              setState(() {
+                if (searchKey.trim() != value.trim()) {
+                  results = search(key: value.trim());
+                }
+                searchKey = value.trim();
+              });
+            },
           ),
         ),
       ),
