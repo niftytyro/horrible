@@ -1,7 +1,4 @@
 import 'package:app/screens/search/search_screen.dart';
-import 'package:app/screens/search/search_screen.dart';
-import 'package:app/services/storage.dart';
-import 'package:app/services/user.dart';
 import 'package:app/theme.dart';
 import 'package:app/utils.dart';
 import 'package:flutter/material.dart';
@@ -17,18 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String name = storage.name ?? "";
-
-  @override
-  void initState() {
-    super.initState();
-    getUser().then((value) {
-      setState(() {
-        name = value["name"];
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -251,7 +251,6 @@ func userHandler(res http.ResponseWriter, req *http.Request) {
 }
 
 func searchHandler(res http.ResponseWriter, req *http.Request) {
-
 	if req.Method != http.MethodGet {
 		res.WriteHeader(http.StatusMethodNotAllowed)
 		return

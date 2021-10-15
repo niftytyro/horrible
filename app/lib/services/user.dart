@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/constants.dart';
+import 'package:app/models/search.dart';
+import 'package:app/models/user.dart';
 import 'package:app/services/storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
@@ -83,7 +85,7 @@ Future<Map> updateProfile(
 ) async {
   try {
     final response = await http.post(
-      Uri.parse("$backendUrl/user"),
+      Uri.parse("$backendUrl/user/"),
       headers: {
         HttpHeaders.authorizationHeader: await storage.jwt ?? '',
       },
@@ -112,4 +114,23 @@ Future<Map> updateProfile(
   } catch (err) {
     return {"error": "We couldn't login. Please try again soon!"};
   }
+}
+
+Future<SearchResult> search({String? key}) async {
+  SearchResult searchResult;
+  try {
+    final response = await http.get(
+      Uri.parse("$backendUrl/search?q=${key ?? ""}"),
+      headers: {
+        HttpHeaders.authorizationHeader: await storage.jwt ?? '',
+      },
+    );
+    Iterable res = json.decode(response.body);
+    List<User> users = List<User>.from(res.map((each) => User.fromJson(each)));
+    searchResult = SearchResult.fromJson(users);
+  } catch (err) {
+    print("ERROR: $err");
+    searchResult = SearchResult.fromJson([], error: "Couldn't fetch users.");
+  }
+  return searchResult;
 }

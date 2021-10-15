@@ -1,0 +1,90 @@
+import 'package:app/models/search.dart';
+import 'package:app/models/user.dart';
+import 'package:app/services/user.dart';
+import 'package:app/theme.dart';
+import 'package:app/widgets/user_tile.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+class SearchScreen extends StatefulWidget {
+  static const route = "/search";
+  const SearchScreen({Key? key}) : super(key: key);
+
+  @override
+  _SearchScreenState createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  late Future<SearchResult> results;
+
+  @override
+  void initState() {
+    super.initState();
+    results = search();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: BrickColors.englishRusk,
+        systemOverlayStyle:
+            const SystemUiOverlayStyle(statusBarColor: BrickColors.englishRusk),
+        elevation: 0,
+        titleSpacing: BrickSpacing.m,
+        title: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(BrickSpacing.xxl),
+            color: BrickColors.white,
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: BrickSpacing.l1,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  decoration: const InputDecoration(
+                    hintText: "Search...",
+                    border: InputBorder.none,
+                  ),
+                  style: BrickTheme.textTheme.bodyText1
+                      ?.copyWith(color: BrickColors.black60),
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: (value) {
+                    setState(() {
+                      results = search(key: value);
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: BrickSpacing.l,
+          horizontal: BrickSpacing.xl,
+        ),
+        child: FutureBuilder<SearchResult>(
+          future: results,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData && snapshot.data!.users.isNotEmpty) {
+                return ListView(
+                  children: snapshot.data!.users.map((user) {
+                    return UserTile(user: user);
+                  }).toList(),
+                );
+              } else {
+                return const Center(child: Text("Couldn't find any users :/"));
+              }
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
+      ),
+    );
+  }
+}
