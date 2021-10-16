@@ -3,6 +3,7 @@ package api
 import (
 	"net/mail"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/udasitharani/horrible/models"
@@ -57,4 +58,11 @@ func nthIndex(text string, subtext string, n int) int {
 		index = newIndex + index + 1
 	}
 	return index
+}
+
+func generateRoomId(userId1 int, userId2 int) string {
+	if userId1 < userId2 {
+		return strconv.Itoa(userId1) + "-" + strconv.Itoa(userId2)
+	}
+	return strconv.Itoa(userId2) + "-" + strconv.Itoa(userId1)
 }
