@@ -12,6 +12,7 @@ class BrickColors {
   static const Color englishRusk = Color(0xFF413C58);
   static const Color englishRuskLight = Color(0xFF615C78);
   static const Color white = Color(0xFFF9F9F9);
+  static const Color jbg = Color(0xFFEFEDF1);
   static const Color black100 = Color(0xFF121212);
   static const Color black80 = Color(0xFF333333);
   static const Color black60 = Color(0xFF666666);

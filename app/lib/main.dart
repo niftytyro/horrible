@@ -1,4 +1,6 @@
+import 'package:app/models/user.dart';
 import 'package:app/screens/auth/auth_screen.dart';
+import 'package:app/screens/chatroom/chatroom_screen.dart';
 import 'package:app/screens/home/home_screen.dart';
 import 'package:app/screens/search/search_screen.dart';
 import 'package:app/screens/splash/splash_screen.dart';
@@ -25,6 +27,13 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Horrible',
         theme: BrickTheme.lightTheme,
+        onGenerateRoute: (settings) {
+          if (settings.name == ChatRoomScreen.route) {
+            final User user = settings.arguments as User;
+            return MaterialPageRoute(
+                builder: (context) => ChatRoomScreen(user: user));
+          }
+        },
         routes: {
           AuthScreen.route: (context) => const AuthScreen(),
           HomeScreen.route: (context) => const HomeScreen(),
