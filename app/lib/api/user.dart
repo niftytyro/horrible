@@ -33,6 +33,7 @@ Future<Map> onboard() async {
     final responseBody = json.decode(response.body);
     storage.setJwt(responseBody["token"]);
     await storage.setUserDetails(
+      id: responseBody["id"],
       bio: responseBody["bio"],
       email: account.email,
       name: responseBody["name"],
@@ -62,6 +63,7 @@ Future<Map> getUser() async {
     }
     final responseBody = json.decode(response.body);
     await storage.setUserDetails(
+      id: responseBody["id"],
       bio: responseBody["bio"],
       email: responseBody["email"],
       name: responseBody["name"],
@@ -100,6 +102,7 @@ Future<Map> updateProfile(
       return {"error": responseBody["error"]};
     }
     await storage.setUserDetails(
+      id: responseBody["id"],
       bio: responseBody["bio"] ?? "",
       email: responseBody["email"],
       name: responseBody["name"],

@@ -1,6 +1,6 @@
 import 'package:app/models/search.dart';
 import 'package:app/models/user.dart';
-import 'package:app/services/user.dart';
+import 'package:app/api/user.dart';
 import 'package:app/theme.dart';
 import 'package:app/widgets/user_tile.dart';
 import 'package:flutter/material.dart';

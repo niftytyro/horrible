@@ -26,6 +26,7 @@ type OnboardingRequest struct {
 }
 
 type OnboardingResponse struct {
+	Id       int    `json:"id"`
 	Bio      string `json:"bio"`
 	Name     string `json:"name"`
 	Token    string `json:"token"`
@@ -41,7 +42,7 @@ type UserRequest struct {
 }
 
 type UserResponse struct {
-	ID       int    `json:"id"`
+	Id       uint   `json:"id"`
 	Bio      string `json:"bio"`
 	Email    string `json:"email"`
 	Name     string `json:"name"`
@@ -106,6 +107,7 @@ func onboardingHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	response.Id = int(user.ID)
 	response.Bio = user.Bio
 	response.Name = user.Name
 	response.Token = tokenString
@@ -155,7 +157,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 		response.Email = user.Email
 		response.Name = user.Name
 		response.Username = user.Username
-		response.ID = int(user.ID)
+		response.Id = user.ID
 		responseEncoder.Encode(response)
 
 	} else if r.Method == http.MethodPost {
@@ -239,7 +241,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 		response.Email = user.Email
 		response.Name = user.Name
 		response.Username = user.Username
-		response.ID = int(user.ID)
+		response.Id = user.ID
 		responseEncoder.Encode(response)
 
 	} else {

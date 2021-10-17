@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 const backendUrl = kReleaseMode ? "" : "http://localhost:8080";
+const websocketUrl = kReleaseMode ? "" : "ws://localhost:8080";
 
 const shortAnimationDuration = Duration(milliseconds: 210);
 const animationDuration = Duration(milliseconds: 420);

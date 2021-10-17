@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:app/api/chat.dart';
+import 'package:app/models/chat.dart';
 import 'package:app/models/user.dart';
+import 'package:app/services/storage.dart';
 import 'package:app/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,9 +22,13 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
+  late final ChatRoom room;
+  String friendMessage = "";
+
   @override
   void initState() {
     super.initState();
+    room = ChatRoom(widget.user.id);
   }
 
   @override
@@ -44,6 +53,30 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   color: BrickColors.lightPeriwinkle,
                   borderRadius: BorderRadius.circular(BrickSpacing.l),
                 ),
+                child: StreamBuilder(
+                  stream: room.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final message =
+                          ChatMessage.fromJson(json.decode("${snapshot.data}"));
+                      if (message.from == storage.id) {
+                        setState(() {
+                          friendMessage = message.message;
+                        });
+                      }
+                    }
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          friendMessage,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: BrickSpacing.l),
@@ -58,15 +91,19 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     TextField(
                       autofocus: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                       ),
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
+                      onChanged: (value) {
+                        room.send(
+                            jsonEncode({"from": storage.id, "message": value}));
+                      },
                     ),
                   ],
                 ),

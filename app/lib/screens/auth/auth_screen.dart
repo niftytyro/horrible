@@ -4,7 +4,7 @@ import 'package:app/screens/auth/loading_page.dart';
 import 'package:app/screens/auth/login_page.dart';
 import 'package:app/screens/auth/profile_page.dart';
 import 'package:app/screens/home/home_screen.dart';
-import 'package:app/services/user.dart';
+import 'package:app/api/user.dart';
 import 'package:app/theme.dart';
 import 'package:app/utils.dart';
 import 'package:app/widgets/resizable_arrow.dart';

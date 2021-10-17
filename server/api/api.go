@@ -20,6 +20,6 @@ func Init() {
 	router.HandleFunc("/search", isAuthorized(searchHandler))
 	router.HandleFunc("/user", isAuthorized(userHandler))
 	router.HandleFunc("/user/", isAuthorized(userHandler))
-	router.HandleFunc("/chat/", chatHandler)
+	router.HandleFunc("/chat/", isAuthorized(chatHandler))
 	log.Fatal(http.ListenAndServe(*addr, router))
 }

@@ -19,12 +19,18 @@ class Storage {
     return _storage.getItem("name");
   }
 
+  int get id {
+    return _storage.getItem("id");
+  }
+
   Future<void> setUserDetails({
+    required int id,
     required String name,
     required String email,
     required String username,
     required String bio,
   }) async {
+    await _storage.setItem("id", id);
     await _storage.setItem("bio", bio);
     await _storage.setItem("email", email);
     await _storage.setItem("name", name);
